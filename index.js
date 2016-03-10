@@ -47,8 +47,11 @@ exports.handler = function (event, context) {
       break;
     case 'pull_request':
       var pull_request = msg.pull_request;
-      if (msg.action == 'opended' || msg.action == 'closed') {
+      if (msg.action == 'closed' && pull_request.merged) {
           text += convertName("@" + pull_request.user.login) + ": " + pull_request.merged_by.login + " merged Pull Request at " + pull_request.html_url + ":\n";
+          text += quote(pull_request.title + "\n" + pull_request.body + "\n");
+      } else if (msg.action == 'assigned' && msg.assignee) {
+          text += convertName("@" + pull_request.assignee.login) + ": " + pull_request.user.login + " assigned you on Pull Request at " + pull_request.html_url + ":\n";
           text += quote(pull_request.title + "\n" + pull_request.body + "\n");
       }
       break;
