@@ -22,9 +22,9 @@ exports.handler = function (event, context) {
     case 'issue_comment':
     case 'pull_request_review_comment':
       var comment = msg.comment;
-      text += comment.user.login + ": \n";
-      text += convertName(comment.body) + "\n";
-      text += comment.html_url;
+      var issue = msg.issue;
+      text += convertName("@" + issue.user.login) + ": " + comment.user.login + " commented at " + comment.html_url + ":\n";
+      text += convertName(comment.body);
       break;
     case 'issues':
       var issue = msg.issue;
@@ -44,10 +44,8 @@ exports.handler = function (event, context) {
     case 'pull_request':
       var pull_request = msg.pull_request;
       if (msg.action == 'opended' || msg.action == 'closed') {
-          text += 'Pull Request ' + msg.action + "\n";
-          text += pull_request.title + "\n";
-          text += pull_request.body + "\n";
-          text += pull_request.html_url;
+          text += convertName("@" + pull_request.user.login) + ": " + pull_request.merged_by.login + " merged Pull Request at " + pull_request.html_url + ":\n";
+          text += pull_request.title + "\n" + pull_request.body + "\n";
       }
       break;
   }
