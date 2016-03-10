@@ -12,6 +12,10 @@ var link = function (url, text) {
   return '<' + url + '|' + text + '>';
 };
 
+var quote = function (text) {
+  return text.trim().split(/\n/).map(function(s) { return "> " + s }).join("\n") + "\n";
+}
+
 exports.handler = function (event, context) {
   console.log('Received GitHub event: ' + event.Records[0].Sns.Message);
   var msg = JSON.parse(event.Records[0].Sns.Message);
@@ -24,7 +28,7 @@ exports.handler = function (event, context) {
       var comment = msg.comment;
       var issue = msg.issue;
       text += convertName("@" + issue.user.login) + ": " + comment.user.login + " commented at " + comment.html_url + ":\n";
-      text += convertName(comment.body);
+      text += quote(convertName(comment.body));
       break;
     case 'issues':
       var issue = msg.issue;
@@ -45,7 +49,7 @@ exports.handler = function (event, context) {
       var pull_request = msg.pull_request;
       if (msg.action == 'opended' || msg.action == 'closed') {
           text += convertName("@" + pull_request.user.login) + ": " + pull_request.merged_by.login + " merged Pull Request at " + pull_request.html_url + ":\n";
-          text += pull_request.title + "\n" + pull_request.body + "\n";
+          text += quote(pull_request.title + "\n" + pull_request.body + "\n");
       }
       break;
   }
