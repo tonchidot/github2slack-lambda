@@ -24,10 +24,15 @@ exports.handler = function (event, context) {
 
   switch (eventName) {
     case 'issue_comment':
-    case 'pull_request_review_comment':
       var comment = msg.comment;
       var issue = msg.issue;
       text += convertName("@" + issue.user.login) + ": " + comment.user.login + " commented at " + comment.html_url + ":\n";
+      text += quote(convertName(comment.body));
+      break;
+    case 'pull_request_review_comment':
+      var comment = msg.comment;
+      var pull_request = msg.pull_request;
+      text += convertName("@" + pull_request.user.login) + ": " + comment.user.login + " commented at " + comment.html_url + ":\n";
       text += quote(convertName(comment.body));
       break;
     case 'issues':
