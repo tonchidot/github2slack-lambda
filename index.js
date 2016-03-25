@@ -58,6 +58,9 @@ exports.handler = function (event, context) {
       } else if (msg.action == 'assigned' && msg.assignee) {
           text += convertName("@" + pull_request.assignee.login) + ": " + pull_request.user.login + " assigned you on Pull Request at " + pull_request.html_url + ":\n";
           text += quote(pull_request.title + "\n" + pull_request.body + "\n");
+      } else if (msg.action == 'synchronize') {
+          text += convertName("@" + pull_request.assignee.login) + ": " + pull_request.user.login + " pushed to Pull Request at " + pull_request.html_url + ":\n";
+          text += quote(pull_request.title + "\n" + pull_request.body + "\n");
       }
       break;
   }
