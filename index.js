@@ -16,6 +16,14 @@ var quote = function (text) {
   return text.trim().split(/\n/).map(function(s) { return "> " + s }).join("\n") + "\n";
 }
 
+var recipient_for = function(actor, owner, assignee) {
+  if (actor.login == owner.login) {
+    return assignee.login;
+  } else {
+    return owner.login;
+  }
+}
+
 exports.handler = function (event, context) {
   console.log('Received GitHub event: ' + event.Records[0].Sns.Message);
   var msg = JSON.parse(event.Records[0].Sns.Message);
@@ -26,13 +34,13 @@ exports.handler = function (event, context) {
     case 'issue_comment':
       var comment = msg.comment;
       var issue = msg.issue;
-      text += convertName("@" + issue.user.login) + ": " + comment.user.login + " commented at " + comment.html_url + ":\n";
+      text += convertName("@" + recipient_for(comment.user, issue.user, issue.assignee)) + ": " + comment.user.login + " commented at " + comment.html_url + ":\n";
       text += quote(convertName(comment.body));
       break;
     case 'pull_request_review_comment':
       var comment = msg.comment;
       var pull_request = msg.pull_request;
-      text += convertName("@" + pull_request.user.login) + ": " + comment.user.login + " commented at " + comment.html_url + ":\n";
+      text += convertName("@" + recipient_for(comment.user, pull_request.user, pull_request.assignee)) + ": " + comment.user.login + " commented at " + comment.html_url + ":\n";
       text += quote(convertName(comment.body));
       break;
     case 'issues':
