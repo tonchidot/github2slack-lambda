@@ -71,6 +71,10 @@ exports.handler = function (event, context) {
           text += quote(pull_request.title + "\n" + pull_request.body + "\n");
       }
       break;
+    case 'status':
+      text += convertName("@" + msg.commit.author.login) + ": " + msg.context + " has been changed state to " + msg.state + " at " + msg.target_url + ":\n";
+      text += quote(msg.description + "\n");
+      break;
   }
 
   if (!text) {
