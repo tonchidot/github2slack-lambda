@@ -69,6 +69,12 @@ exports.handler = function (event, context) {
       } else if (msg.action == 'synchronize') {
           text += convertName("@" + pull_request.assignee.login) + ": " + pull_request.user.login + " pushed to Pull Request at " + pull_request.html_url + ":\n";
           text += quote(pull_request.title + "\n" + pull_request.body + "\n");
+      } else if (msg.action == 'review_requested') {
+          text += convertName("@" + msg.requested_reviewer.login) + ": " + pull_request.user.login + " assigned you as reviewer of Pull Request at " + pull_request.html_url + ":\n";
+          text += quote(pull_request.title + "\n" + pull_request.body + "\n");
+      } else if (msg.action == 'review_request_removed') {
+          text += convertName("@" + msg.requested_reviewer.login) + ": " + pull_request.user.login + " unassigned you as reviewer of Pull Request at " + pull_request.html_url + ":\n";
+          text += quote(pull_request.title + "\n" + pull_request.body + "\n");
       }
       break;
     case 'status':
